@@ -47,11 +47,11 @@ class Spider:
         for url in url_list :
             html_str = self.parse_url(url)
         #3.提取数据
-        content_list = self.get_content_list(html_str)
+            content_list = self.get_content_list(html_str)
         #4.保存数据
-        self.save_content_list(content_list)
+            self.save_content_list(content_list)
 
     if __name__ =='__main__':
         #实例化Spider
         qiubai = Spider()
-        qiubai,run()
+        qiubai.run()
