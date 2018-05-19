@@ -1,0 +1,42 @@
+#！/user/bin/env python
+# -*- coding:utf-8 -*-
+# __author__ = Jedieal  time:2018/5/17
+
+
+# 目的 ： 学习分析url的结构以及网页结构，以爬取多组数据
+
+import urllib.request
+import json
+import re
+import os
+import socket
+
+socket.setdefaulttimeout(3)
+os.mkdir("快视频")
+# 获取视频列表
+page_num = 1
+# 对每页进行循环获取数据
+while True :
+    list_url = "http://pc.k.360kan.com/pc/list?n=10&p=" + str(page_num) +"&f=json"
+    page = json.loads(urllib.request.urlopen(list_url).read().decode("utf-8"))['data']['res']
+    for eve in page:
+        # 获取视频信息
+        author = eve['f']
+        title = eve['t']
+        # 特殊字符要转义
+        eve_url = re.findall('detail/(.*?)\?', eve['u'])[0]
+        data_url = "http://pc.k.360kan.com/pc/play?id="+eve_url
+        file_url = json.loads(urllib.request.urlopen(data_url).read().decode('utf-8'))['data']['url']
+        # 存储文件
+        try:
+            with open("快视频" + '/'+ title + '.mp4','wb') as f:
+                # 以二进制形式写入file_url内的文件
+                f.write(urllib.request.urlopen(file_url).read())
+            print (title)
+        except Exception as e:
+            print(e)
+    if  len(page) >5 :
+        page_num += 1
+        print('----')
+    else :
+        break
